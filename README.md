@@ -1,4 +1,3 @@
-Here’s a polished and exciting README tailored to your project and the hackathon:
 
 ⸻
 
