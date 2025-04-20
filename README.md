@@ -1,81 +1,121 @@
-# Clippy app
+Here’s a polished and exciting README tailored to your project and the hackathon:
 
-## Run the app
+⸻
 
-### uv
+🔍 Clippy – Your Cross-Platform Smart Search Butler
 
-Run as a desktop app:
+Clippy is your personal AI-powered assistant, beautifully blending a lightning-fast search interface with intelligent agent capabilities. Inspired by the minimalism of macOS Spotlight and enhanced by the power of the Agno Agent Framework, ClippyAI helps you:
+	•	✨ Search files instantly
+	•	📁 Summarize files by dragging and dropping them
+	•	💬 Get concise answers, quick code snippets, or word definitions
+	•	🤖 Use agent-powered lightweight utilities with precision
+	•	🎯 All wrapped in a stunning native UI using only Python!
 
-```
-uv run flet run
-```
+⸻
 
-Run as a web app:
+🧠 Features
 
-```
-uv run flet run --web
-```
+Feature	Description
+🔎 Smart Search	Type anything to trigger intelligent file search with instant result sorting.
+🧠 Agent Assistant	Get AI-powered summaries, quick definitions, or code in seconds.
+📂 File Drop	Drag and drop a file to get instant AI summarization and indexing.
+🖥️ Native UI	Fully native desktop UI using Flet — beautiful, frameless, and minimal.
+🔁 Debounced Input	Performance-optimized search using a custom debouncer utility.
+🪄 Precise Results	Responses are short, focused, and designed for quick utility.
+🔌 Cross Platform	Runs seamlessly on Windows, macOS, and soon Linux.
+🎨 Animations Coming Soon	Eye-candy animations and transitions planned with Flet’s animation support.
 
-### Poetry
 
-Install dependencies from `pyproject.toml`:
 
-```
-poetry install
-```
+⸻
 
-Run as a desktop app:
+🚀 Getting Started
 
-```
-poetry run flet run
-```
+1. Clone this Repo
 
-Run as a web app:
+git clone https://github.com/smil-thakur/Clippy.git
+cd Clippy
 
-```
-poetry run flet run --web
-```
+2. Install Requirements
 
-For more details on running the app, refer to the [Getting Started Guide](https://flet.dev/docs/getting-started/).
+We recommend using a virtual environment:
 
-## Build the app
+python -m venv clippyENV
+source clippyENV/bin/activate  # or clippyENV\Scripts\activate on Windows
+pip install -r requirements.txt
 
-### Android
+3. Setup .env
 
-```
-flet build apk -v
-```
+Create a .env file and add your Gemini API Key:
 
-For more details on building and signing `.apk` or `.aab`, refer to the [Android Packaging Guide](https://flet.dev/docs/publish/android/).
+GEMINI_API_KEY=your_api_key_here
 
-### iOS
+4. Run the App
 
-```
-flet build ipa -v
-```
+python src/main.py
 
-For more details on building and signing `.ipa`, refer to the [iOS Packaging Guide](https://flet.dev/docs/publish/ios/).
 
-### macOS
 
-```
-flet build macos -v
-```
+⸻
 
-For more details on building macOS package, refer to the [macOS Packaging Guide](https://flet.dev/docs/publish/macos/).
+📁 Project Structure
 
-### Linux
+.
+├── agno/                    # Agno agent integration
+├── components/              # UI components like result section
+├── utilities/               # Debouncer, File & Search utils
+├── src/main.py              # Main entry point of the app
+├── .env                     # Environment file for keys
+├── requirements.txt         # Python dependencies
+└── README.md                # You are here!
 
-```
-flet build linux -v
-```
 
-For more details on building Linux package, refer to the [Linux Packaging Guide](https://flet.dev/docs/publish/linux/).
 
-### Windows
+⸻
 
-```
-flet build windows -v
-```
+🧩 Tech Stack
+	•	🐍 Python
+	•	💻 Flet – Native cross-platform UI framework
+	•	🧠 Agno Agent
+	•	🪄 Gemini API (via Agno Models)
+	•	⚙️ Asyncio, Debouncing, File system search, and more
 
-For more details on building Windows package, refer to the [Windows Packaging Guide](https://flet.dev/docs/publish/windows/).
+⸻
+
+🎯 Vision
+
+We’re building the next-gen AI-powered Spotlight for your desktop – a hybrid between a blazing-fast search tool and a context-aware assistant. This is just the beginning. In the future, ClippyAI will include:
+	•	🔄 Intelligent multi-agent workflows
+	•	🔊 TTS summarization of documents
+	•	🧠 Local memory for smarter interactions
+	•	📦 Plugin architecture
+
+⸻
+
+🤝 Contributing
+
+Got an idea? PRs welcome!
+Open an issue or drop your suggestions.
+
+⸻
+
+🏆 Hackathon Participation
+
+This project is being developed as part of the Global Agent Hackathon – May 2025. Let’s build the future of intelligent agents, one utility at a time.
+
+⸻
+
+📸 Sneak Peek
+
+
+
+https://github.com/user-attachments/assets/b2fc8fe4-195c-4656-bd5d-356ba2d9e1b6
+
+
+⸻
+
+📬 Contact
+
+Feel free to reach out or connect on GitHub if you’d like to collaborate or contribute!
+
+⸻
