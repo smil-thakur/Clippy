@@ -83,7 +83,7 @@ python src/main.py
 🧩 Tech Stack
 	•	🐍 Python
 	•	💻 Flet – Native cross-platform UI framework
-	•	🧠 Agno Agent
+	•	🧠 Agno Agent https://www.agno.com/
 	•	🪄 Gemini API (via Agno Models)
 	•	⚙️ Asyncio, Debouncing, File system search, and more
 
@@ -107,6 +107,7 @@ Open an issue or drop your suggestions.
 ⸻
 
 🏆 Hackathon Participation
+https://github.com/global-agent-hackathon/global-agent-hackathon-may-2025
 
 This project is being developed as part of the Global Agent Hackathon – May 2025. Let’s build the future of intelligent agents, one utility at a time.
 
