@@ -59,16 +59,23 @@ python src/main.py
 
 📁 Project Structure
 
-.
-clippyai/
-├── agentTool/                   # Agno agent integration (WIP)
-├── components/             # UI components like result section
-├── utilities/              # Debouncer, File & Search utils
-├── src/
-│   └── main.py             # Main entry point of the app
-├── .env                    # Environment file for keys
-├── requirements.txt        # Python dependencies
-└── README.md               # You are here!
+<ul>
+  <li><strong>clippyai/</strong>
+    <ul>
+      <li><strong>agentTool/</strong> – Agno agent integration (WIP)</li>
+      <li><strong>components/</strong> – UI components like result section</li>
+      <li><strong>utilities/</strong> – Debouncer, File & Search utils</li>
+      <li><strong>src/</strong>
+        <ul>
+          <li><strong>main.py</strong> – Main entry point of the app</li>
+        </ul>
+      </li>
+      <li><strong>.env</strong> – Environment file for keys</li>
+      <li><strong>requirements.txt</strong> – Python dependencies</li>
+      <li><strong>README.md</strong> – You are here!</li>
+    </ul>
+  </li>
+</ul>
 
 
 ⸻
