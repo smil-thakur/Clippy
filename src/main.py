@@ -1,4 +1,3 @@
-import asyncio
 import flet as ft
 from utilities.debouncer import *
 from utilities.fileUtils import *
@@ -10,8 +9,8 @@ from agno.agent import Agent
 from agno.models.google import Gemini
 from dotenv import load_dotenv
 import os
-from components.glowingContainer import *
-import random
+from components.aiResponseContainer import *
+from agentTools.agentTools import *
 
 
 def adjust_window_height(mainColumn: ft.Column, page: ft.Page):
@@ -22,12 +21,11 @@ def adjust_window_height(mainColumn: ft.Column, page: ft.Page):
             if contains_element(mainColumn, "search_result_container"):
                 page.window.height = 450
             if contains_element(mainColumn, "response"):
-                page.window.height = 300
+                page.window.height = 350
         case 3:
             page.window.height = 650
 
 
-# ✅ Helper: Remove a control by its unique key
 def remove_control_by_key(container: ft.Column, key: str):
     container.controls = [
         c for c in container.controls if getattr(c, "key", None) != key]
@@ -81,14 +79,14 @@ def expand_window(e: ft.ControlEvent, debouncer: Debouncer, page: ft.Page, mainC
     latest_query["value"] = query
 
     if not query:
+        remove_control_by_key(
+            key="search_result_container", container=mainColumn)
+        remove_control_by_key(mainColumn, "response")
         adjust_window_height(mainColumn, page)
         debouncer.callback = lambda: debounced_search(
             query, latest_query, page, mainColumn
         )
         debouncer.call()
-        remove_control_by_key(
-            key="search_result_container", container=mainColumn)
-        remove_control_by_key(mainColumn, "response")
         page.update()
         return
     else:
@@ -99,51 +97,27 @@ def expand_window(e: ft.ControlEvent, debouncer: Debouncer, page: ft.Page, mainC
             debouncer.call()
 
 
-# ✅ Updated: No index-based popping. All by key!
 async def searchBarEntered(e: ft.ControlEvent, agent: Agent, mainColumn: ft.Column, page: ft.Page):
 
-    print("loading......")
-
-    glowContainer, task, glowContent = GlowingBorderContainer(
-        content=ft.Text("Loading..."),  # Initial placeholder
-        height=200,
-        width=page.width,
-        padding=4,
-        key="response"
-    )
-    asyncio.create_task(task())
-
-    # Add once
     remove_control_by_key(mainColumn, "response")
-    mainColumn.controls.insert(1, glowContainer)
+    mainColumn.controls.insert(1, AIResponseContainer(
+        ft.Text("I am thinking...."), width=page.width, key="response", page=page))
     adjust_window_height(mainColumn, page)
     page.update()
+    res = (await agent.arun(e.data)).content
 
-    try:
-        result = await agent.arun(e.data)
-        print(result.content)
-
-        # 🔄 Just update the glowContent, not recreate the glowContainer
-        glowContent.content = ft.Column(
-            scroll=ft.ScrollMode.ALWAYS,
-            controls=[
-                ft.Markdown(value=result.content, selectable=True,
-                            shrink_wrap=True,
-                            extension_set=ft.MarkdownExtensionSet.GITHUB_WEB, code_theme=ft.MarkdownCodeTheme.DARCULA)
-            ]
-        )
-        glowContent.update()
-        adjust_window_height(mainColumn, page)
-
-    except Exception as ex:
-        glowContent.content = ft.Text(f"Error: {ex}")
-        glowContent.update()
-        adjust_window_height(mainColumn, page)
+    remove_control_by_key(mainColumn, "response")
+    mainColumn.controls.insert(1, AIResponseContainer(
+        ft.Markdown(value=res, selectable=True,
+                    shrink_wrap=True,
+                    extension_set=ft.MarkdownExtensionSet.GITHUB_WEB, code_theme=ft.MarkdownCodeTheme.DARCULA),
+        width=page.width, key="response", res=res, page=page))
+    adjust_window_height(mainColumn, page)
 
     page.update()
 
 
-load_dotenv()  # Automatically loads .env file
+load_dotenv()
 
 
 def createAgent() -> Agent:
@@ -152,6 +126,7 @@ def createAgent() -> Agent:
         raise ValueError("GEMINI_API_KEY is missing in your .env file")
     return Agent(
         model=Gemini("gemini-2.0-flash", api_key=api_key),
+        tools=[AgentTools.searchWeb()],
         description=(
             "You are an intelligent assistant embedded in a search interface. "
             "In addition to helping with searches, you can summarize information, define words, and write small, precise code snippets. "
@@ -159,10 +134,6 @@ def createAgent() -> Agent:
         ),
         markdown=True
     )
-
-
-def giveRotation():
-    return random.randint(1, 180)
 
 
 async def main(page: ft.Page):
@@ -173,6 +144,7 @@ async def main(page: ft.Page):
     page.window.height = 100
     page.window.resizable = True
     page.window.frameless = True
+    page.bgcolor = "#1a1f2c"
 
     agent = createAgent()
     debouncer = Debouncer(1, None)
@@ -184,11 +156,16 @@ async def main(page: ft.Page):
     search = ft.TextField(
         hint_text="Search something...",
         on_submit=on_submit,
-        on_change=lambda e: expand_window(e, debouncer, page, mainColumn)
+        border_color="#403e43",
+        bgcolor="#1d1f2a",
+        on_change=lambda e: expand_window(e, debouncer, page, mainColumn),
+        border_radius=12,
+        hint_style=ft.TextStyle(color="#9b87f5"),
+        suffix_icon=ft.Icon(ft.Icons.SEARCH, size=30, color="#9b87f5"),
+
     )
     mainColumn.controls.append(search)
 
     page.add(mainColumn)
-    print(page.window.height)
 
 ft.app(target=main)
