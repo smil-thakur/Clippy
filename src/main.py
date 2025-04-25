@@ -11,6 +11,9 @@ from dotenv import load_dotenv
 import os
 from components.aiResponseContainer import *
 from agentTools.agentTools import *
+import multiprocessing
+from pynput import keyboard
+import time
 
 
 def adjust_window_height(mainColumn: ft.Column, page: ft.Page):
@@ -168,4 +171,44 @@ async def main(page: ft.Page):
 
     page.add(mainColumn)
 
-ft.app(target=main)
+
+app_process = None
+
+
+def runClippy():
+    import flet as ft
+    ft.app(target=main)
+
+
+def toggle_application():
+    global app_process
+    if app_process is None or not app_process.is_alive():
+        app_process = multiprocessing.Process(target=runClippy)
+        app_process.start()
+    else:
+        app_process.terminate()
+        app_process = None
+
+
+def hotkey_listener():
+    def for_canonical(f):
+        return lambda k: f(listener.canonical(k))
+
+    hotkey = keyboard.HotKey(
+        keyboard.HotKey.parse('<ctrl>+<shift>+c'),
+        toggle_application
+    )
+
+    with keyboard.Listener(
+        on_press=for_canonical(hotkey.press),
+        on_release=for_canonical(hotkey.release)
+    ) as listener:
+        listener.join()
+
+
+if __name__ == "__main__":
+    multiprocessing.freeze_support()
+    threading.Thread(target=hotkey_listener, daemon=True).start()
+
+    while True:
+        time.sleep(1)
