@@ -1,7 +1,7 @@
-from agno.tools.googlesearch import GoogleSearchTools
+from agno.tools.duckduckgo import DuckDuckGoTools
 
 
 class AgentTools:
     @staticmethod
     def searchWeb():
-        return GoogleSearchTools()
+        return DuckDuckGoTools()

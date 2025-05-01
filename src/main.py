@@ -7,26 +7,37 @@ from utilities.searchUtils import *
 from components.resultSection import *
 from agno.agent import Agent
 from agno.models.google import Gemini
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 import os
 from components.aiResponseContainer import *
 from agentTools.agentTools import *
 import multiprocessing
-from pynput import keyboard
 import time
+from screeninfo import get_monitors
+import pyautogui
+from pynput import keyboard
+import sys
+from utilities.checkPermissions import *
+from agents.mainAgent import MainAgent
 
 
 def adjust_window_height(mainColumn: ft.Column, page: ft.Page):
     match len(mainColumn.controls):
         case 1:
             page.window.height = 70
+            page.title = f"{100}"
         case 2:
             if contains_element(mainColumn, "search_result_container"):
                 page.window.height = 450
+                page.title = f"{450}"
+
             if contains_element(mainColumn, "response"):
                 page.window.height = 350
+                page.title = f"{350}"
+
         case 3:
             page.window.height = 650
+            page.title = f"{650}"
 
 
 def remove_control_by_key(container: ft.Column, key: str):
@@ -100,43 +111,44 @@ def expand_window(e: ft.ControlEvent, debouncer: Debouncer, page: ft.Page, mainC
             debouncer.call()
 
 
-async def searchBarEntered(e: ft.ControlEvent, agent: Agent, mainColumn: ft.Column, page: ft.Page):
+async def searchBarEntered(e: ft.ControlEvent, mainColumn: ft.Column, page: ft.Page):
 
     remove_control_by_key(mainColumn, "response")
     mainColumn.controls.insert(1, AIResponseContainer(
         ft.Text("I am thinking...."), width=page.width, key="response", page=page))
     adjust_window_height(mainColumn, page)
     page.update()
-    res = (await agent.arun(e.data)).content
+    res = await mainAgent.initiateMainAgent(e.data or "")
 
     remove_control_by_key(mainColumn, "response")
     mainColumn.controls.insert(1, AIResponseContainer(
         ft.Markdown(value=res, selectable=True,
                     shrink_wrap=True,
                     extension_set=ft.MarkdownExtensionSet.GITHUB_WEB, code_theme=ft.MarkdownCodeTheme.DARCULA),
-        width=page.width, key="response", res=res, page=page))
+        width=page.width, key="response", res=res, page=page))  # type: ignore
     adjust_window_height(mainColumn, page)
 
     page.update()
 
 
-load_dotenv()
+if getattr(sys, 'frozen', False):
+    base_path = sys._MEIPASS  # type: ignore
+    env_file_path = os.path.join(base_path, '.env')
+else:
+    env_file_path = '.env'
 
+# Load the .env file
+print("env_file_path", env_file_path)
+keys = dotenv_values(dotenv_path=env_file_path)
+# This checks if the file is found
+print("Current working directory:", os.getcwd())
 
-def createAgent() -> Agent:
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        raise ValueError("GEMINI_API_KEY is missing in your .env file")
-    return Agent(
-        model=Gemini("gemini-2.0-flash", api_key=api_key),
-        tools=[AgentTools.searchWeb()],
-        description=(
-            "You are an intelligent assistant embedded in a search interface. "
-            "In addition to helping with searches, you can summarize information, define words, and write small, precise code snippets. "
-            "Keep all responses brief and focused, as this assistant is designed for quick, lightweight tasks."
-        ),
-        markdown=True
-    )
+print("File exists:", os.path.exists(env_file_path))
+
+print("keys", keys.items())
+
+mainAgent = MainAgent(apiKey=keys["GEMINI_API_KEY"]
+                      or "", model="gemini-2.0-flash")
 
 
 async def main(page: ft.Page):
@@ -147,14 +159,15 @@ async def main(page: ft.Page):
     page.window.height = 100
     page.window.resizable = True
     page.window.frameless = True
+    page.window.always_on_top = True
+    page.title = f"{100}"
     page.bgcolor = "#1a1f2c"
-
-    agent = createAgent()
+    print(page.height)
     debouncer = Debouncer(1, None)
     mainColumn = ft.Column()
 
     async def on_submit(e: ft.ControlEvent):
-        await searchBarEntered(e, agent, mainColumn, page)
+        await searchBarEntered(e, mainColumn, page)
 
     search = ft.TextField(
         hint_text="Search something...",
@@ -171,44 +184,7 @@ async def main(page: ft.Page):
 
     page.add(mainColumn)
 
-
-app_process = None
-
-
-def runClippy():
-    import flet as ft
-    ft.app(target=main)
+    CheckPermission.checkDiskPermission()
 
 
-def toggle_application():
-    global app_process
-    if app_process is None or not app_process.is_alive():
-        app_process = multiprocessing.Process(target=runClippy)
-        app_process.start()
-    else:
-        app_process.terminate()
-        app_process = None
-
-
-def hotkey_listener():
-    def for_canonical(f):
-        return lambda k: f(listener.canonical(k))
-
-    hotkey = keyboard.HotKey(
-        keyboard.HotKey.parse('<ctrl>+<shift>+c'),
-        toggle_application
-    )
-
-    with keyboard.Listener(
-        on_press=for_canonical(hotkey.press),
-        on_release=for_canonical(hotkey.release)
-    ) as listener:
-        listener.join()
-
-
-if __name__ == "__main__":
-    multiprocessing.freeze_support()
-    threading.Thread(target=hotkey_listener, daemon=True).start()
-
-    while True:
-        time.sleep(1)
+ft.app(target=main)

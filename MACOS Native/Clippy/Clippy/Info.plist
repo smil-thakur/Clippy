@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Supports Multiple Window</key>
+	<false/>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>This app uses Apple Events to communicate with other apps.</string>
+
+	<key>NSSystemAdministrationUsageDescription</key>
+	<string>We need access to system administration for functionality.</string>
+
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>We need access to your documents folder to function correctly.</string>
+
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>Access to downloads helps Clippy search files.</string>
+
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>We need desktop access for searching and managing files.</string>
+
+	<key>NSFullDiskAccessUsageDescription</key>
+	<string>Clippy requires Full Disk Access to search your entire system efficiently.</string>
+</dict>
+</plist>

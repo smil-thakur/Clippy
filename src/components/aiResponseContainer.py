@@ -1,15 +1,16 @@
 import flet as ft
+import pyperclip
 
 
 def AIResponseContainer(content: ft.Control, width: ft.OptionalNumber, key: int, page: ft.Page, res=None) -> ft.Container:
     def copy_to_clipboard(e):
         if res:
-            page.set_clipboard(res)
+            pyperclip.copy(res)
             page.open(ft.SnackBar(ft.Text(f"Copied to Clipboard!"), duration=2))
             page.update()
 
     return ft.Container(
-        key=key,
+        key=key,  # type: ignore
         height=250,
         bgcolor="#212436",
         width=width,
