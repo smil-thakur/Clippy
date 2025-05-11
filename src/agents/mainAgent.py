@@ -1,42 +1,51 @@
-from functools import partial
-from agno.agent import Agent
 from agno.models.google import Gemini
 from agents.agentsUtility import *
+from agno.team.team import Team
+from agno.memory.v2.memory import Memory
+from agno.memory.v2.db.sqlite import SqliteMemoryDb
+from agno.storage.sqlite import SqliteStorage
+from utilities.getResourcePath import get_asset_path
 
 
 class MainAgent:
     def __init__(self, apiKey: str, model: str):
         self.apiKey = apiKey
         self.model = model
-
-    async def invoke_general_agent(self, prompt: str) -> str:
-        print("Invoking general-purpose agent")
-        agent = AgentsUtility.generalPurposeAgent(self.model, self.apiKey)
-        res = await agent.arun(prompt)
-        print("Response from general-purpose agent:", res.content)
-        return res.content
-
-    async def invoke_terminal_agent(self, prompt: str) -> str:
-        print("Invoking terminal agent")
-        agent = AgentsUtility.terminalAgent(self.model, self.apiKey)
-        res = await agent.arun(prompt)
-        print("Response from terminal agent:", res.content)
-        return res.content
+        self.memory_db = SqliteMemoryDb(
+            table_name="team_memory", db_file=get_asset_path("memory.db"))
+        self.memory = Memory(db=self.memory_db)
+        self.storage = SqliteStorage(
+            table_name="team_session", db_file=get_asset_path("memory.db"))
+        self.userId = "user"
+        self.sessionId = "session"
 
     async def initiateMainAgent(self, prompt: str) -> str:
-        router_agent = Agent(
+        router_agent = Team(
+            name="Route agent",
             model=Gemini(api_key=self.apiKey, id=self.model),
-            description=(
-                '''You are a routing agent. Based on the user's input, choose the correct tool from the available ones.'''
-                '''If the input is a general-purpose query, invoke the general-purpose agent.'''
-                '''If it relates to command-line execution or terminal operations, invoke the terminal agent.'''
-                '''Use the appropriate tool and return ONLY the tool’s result as your final response.'''
-                '''Do NOT alter, summarize, modify, enhance, or reduce the tool output. Just return it exactly as received.'''
-            ),
-            tools=[
-                self.invoke_general_agent,
-                self.invoke_terminal_agent
-            ]
+            mode="route",
+            # instructions=(
+            #     '''You are a routing agent. Based on the user's input, choose the correct tool from the available ones.'''
+            #     '''If the input is a general-purpose query, invoke the general-purpose agent.'''
+            #     '''If it relates to command-line execution or terminal operations, invoke the terminal agent.'''
+            #     '''Use the appropriate tool and return ONLY the tool’s result as your final response.'''
+            #     '''Do NOT alter, summarize, modify, enhance, or reduce the tool output. Just return it exactly as received.'''
+            # ),
+            memory=self.memory,
+            enable_agentic_memory=True,
+            enable_user_memories=True,
+            enable_agentic_context=True,
+            markdown=True,
+            enable_team_history=True,
+            num_of_interactions_from_history=5,
+            members=[AgentsUtility.generalPurposeAgent(
+                self.model, self.apiKey), AgentsUtility.terminalAgent(self.model, self.apiKey)]
+
         )
-        res = await router_agent.arun(prompt)
+        res = await router_agent.arun(prompt, session_id=self.sessionId, user_id=self.userId)
+        print("*************************************************************")
+        print(res)
+        print("*************************************************************")
+
+        # print(res.content)
         return str(res.content)

@@ -33,6 +33,9 @@ class SearchUtils:
                 if "/Library/" not in path and not path.startswith("/Library/")
             ]
 
+            if len(filtered_results) > 100:
+                return filtered_results[:100]
+
             return filtered_results
 
         except Exception as e:

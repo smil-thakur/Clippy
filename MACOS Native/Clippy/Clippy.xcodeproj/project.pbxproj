@@ -15,7 +15,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		36CC406B2DBCC7420026840B /* Exceptions for "Clippy" folder in "Clippy" target */ = {
+		368E14F72DCFEC2D0048AACD /* Exceptions for "Clippy" folder in "Clippy" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -25,10 +25,15 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		368E14F92DD0D8EE0048AACD /* Resources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		36CC405A2DBCC5B30026840B /* Clippy */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				36CC406B2DBCC7420026840B /* Exceptions for "Clippy" folder in "Clippy" target */,
+				368E14F72DCFEC2D0048AACD /* Exceptions for "Clippy" folder in "Clippy" target */,
 			);
 			path = Clippy;
 			sourceTree = "<group>";
@@ -50,6 +55,7 @@
 		36CC404F2DBCC5B30026840B = {
 			isa = PBXGroup;
 			children = (
+				368E14F92DD0D8EE0048AACD /* Resources */,
 				36CC405A2DBCC5B30026840B /* Clippy */,
 				36CC40592DBCC5B30026840B /* Products */,
 			);
@@ -79,6 +85,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				368E14F92DD0D8EE0048AACD /* Resources */,
 				36CC405A2DBCC5B30026840B /* Clippy */,
 			);
 			name = Clippy;
@@ -271,11 +278,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Clippy/Clippy.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 62B94GN72H;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Clippy/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
@@ -299,11 +309,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Clippy/Clippy.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 62B94GN72H;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Clippy/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;

@@ -19,6 +19,9 @@ from pynput import keyboard
 import sys
 from utilities.checkPermissions import *
 from agents.mainAgent import MainAgent
+from utilities.getResourcePath import get_asset_path
+from rx.subject.behaviorsubject import BehaviorSubject
+from states import thinkingStates
 
 
 def adjust_window_height(mainColumn: ft.Column, page: ft.Page):
@@ -112,7 +115,7 @@ def expand_window(e: ft.ControlEvent, debouncer: Debouncer, page: ft.Page, mainC
 
 
 async def searchBarEntered(e: ft.ControlEvent, mainColumn: ft.Column, page: ft.Page):
-
+    print("prompt entered to clippy:", e.data)
     remove_control_by_key(mainColumn, "response")
     mainColumn.controls.insert(1, AIResponseContainer(
         ft.Text("I am thinking...."), width=page.width, key="response", page=page))
@@ -131,19 +134,13 @@ async def searchBarEntered(e: ft.ControlEvent, mainColumn: ft.Column, page: ft.P
     page.update()
 
 
-if getattr(sys, 'frozen', False):
-    base_path = sys._MEIPASS  # type: ignore
-    env_file_path = os.path.join(base_path, '.env')
-else:
-    env_file_path = '.env'
-
 # Load the .env file
-print("env_file_path", env_file_path)
-keys = dotenv_values(dotenv_path=env_file_path)
+print("env_file_path", )
+keys = dotenv_values(dotenv_path=get_asset_path(".env"))
 # This checks if the file is found
 print("Current working directory:", os.getcwd())
 
-print("File exists:", os.path.exists(env_file_path))
+print("File exists:", os.path.exists(get_asset_path(".env")))
 
 print("keys", keys.items())
 
@@ -163,8 +160,14 @@ async def main(page: ft.Page):
     page.title = f"{100}"
     page.bgcolor = "#1a1f2c"
     print(page.height)
-    debouncer = Debouncer(1, None)
+    debouncer = Debouncer(0, None)
     mainColumn = ft.Column()
+    thinkingStates.currentThinking = BehaviorSubject(False)
+
+    thinkingStates.currentThinking.subscribe(
+        lambda value: print("current thinking changed to:", value))
+
+    thinkingStates.currentThinking.on_next(True)
 
     async def on_submit(e: ft.ControlEvent):
         await searchBarEntered(e, mainColumn, page)
@@ -187,4 +190,5 @@ async def main(page: ft.Page):
     CheckPermission.checkDiskPermission()
 
 
-ft.app(target=main)
+ft.app(target=main, view=None, port=8550)
+# ft.app(target=main)

@@ -123,6 +123,7 @@ dependencies = [
   "websockets==15.0.1",
   "xattr==1.1.4",
   "zstandard==0.23.0",
+  "SQLAlchemy==2.0.40"
 ]
 
 [tool.flet]
